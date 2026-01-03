@@ -7,6 +7,7 @@ import CodeOutput from "@/components/CodeOutput";
 import ColorPresets from "@/components/ColorPresets";
 import SliderControl from "@/components/SliderControl";
 import IconPicker from "@/components/IconPicker";
+import WebsitePreview from "@/components/WebsitePreview";
 
 const Index = () => {
   const [url, setUrl] = useState("");
@@ -187,7 +188,7 @@ const Index = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
           >
-            {/* Preview */}
+            {/* Button Preview */}
             <div className="glass-card rounded-2xl p-6">
               <ButtonPreview
                 url={url}
@@ -198,6 +199,29 @@ const Index = () => {
                 paddingX={paddingX}
                 paddingY={paddingY}
                 borderRadius={borderRadius}
+              />
+            </div>
+
+            {/* Website Preview */}
+            <div className="glass-card rounded-2xl p-6">
+              <WebsitePreview
+                buttonHtml={
+                  <a
+                    href={url || "#"}
+                    style={{
+                      display: "inline-block",
+                      backgroundColor: bgColor,
+                      color: textColor,
+                      fontSize: `${fontSize}px`,
+                      fontWeight: "bold",
+                      padding: `${paddingY}px ${paddingX}px`,
+                      textDecoration: "none",
+                      borderRadius: `${borderRadius}px`,
+                    }}
+                  >
+                    {buttonText || "🚀 Click Me"}
+                  </a>
+                }
               />
             </div>
 
