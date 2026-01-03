@@ -6,6 +6,7 @@ import ButtonPreview from "@/components/ButtonPreview";
 import CodeOutput from "@/components/CodeOutput";
 import ColorPresets from "@/components/ColorPresets";
 import SliderControl from "@/components/SliderControl";
+import IconPicker from "@/components/IconPicker";
 
 const Index = () => {
   const [url, setUrl] = useState("");
@@ -101,6 +102,9 @@ const Index = () => {
                 className="bg-secondary/50 border-border/50 focus:border-primary input-glow"
               />
             </div>
+
+            {/* Icon Picker */}
+            <IconPicker onSelect={(icon) => setButtonText(icon + " " + buttonText.replace(/^[\p{Emoji}\s]+/u, ""))} />
 
             {/* Color Presets */}
             <ColorPresets onSelect={handlePresetSelect} />
