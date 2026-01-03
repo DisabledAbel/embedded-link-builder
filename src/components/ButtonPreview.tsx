@@ -9,6 +9,7 @@ interface ButtonPreviewProps {
   paddingX: number;
   paddingY: number;
   borderRadius: number;
+  styleType: "solid" | "link";
 }
 
 const ButtonPreview = ({
@@ -20,8 +21,22 @@ const ButtonPreview = ({
   paddingX,
   paddingY,
   borderRadius,
+  styleType,
 }: ButtonPreviewProps) => {
-  const buttonStyle: React.CSSProperties = {
+  const solidStyle: React.CSSProperties = {
+    display: "inline-block",
+    backgroundColor: bgColor,
+    color: textColor,
+    fontSize: `${fontSize}px`,
+    fontWeight: "bold",
+    padding: `${paddingY}px ${paddingX}px`,
+    textDecoration: "none",
+    borderRadius: `${borderRadius}px`,
+    transition: "all 0.3s ease",
+    cursor: "pointer",
+  };
+
+  const linkStyle: React.CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
     gap: "8px",
@@ -35,6 +50,8 @@ const ButtonPreview = ({
     transition: "all 0.3s ease",
     cursor: "pointer",
   };
+
+  const buttonStyle = styleType === "link" ? linkStyle : solidStyle;
 
   return (
     <div className="flex flex-col items-center gap-4">

@@ -18,8 +18,17 @@ const Index = () => {
   const [paddingX, setPaddingX] = useState(30);
   const [paddingY, setPaddingY] = useState(15);
   const [borderRadius, setBorderRadius] = useState(12);
+  const [buttonStyle, setButtonStyle] = useState<"solid" | "link">("solid");
 
   const generateCode = () => {
+    if (buttonStyle === "link") {
+      return `<a href="${url || "https://your-url.com"}" 
+   style="display: inline-flex; align-items: center; gap: 8px; background-color: transparent; color: ${textColor}; 
+          font-size: ${fontSize}px; padding: ${paddingY}px ${paddingX}px; 
+          text-decoration: underline; text-underline-offset: 4px;">
+    ${buttonText}
+</a>`;
+    }
     return `<a href="${url || "https://your-url.com"}" 
    style="display: inline-block; background-color: ${bgColor}; color: ${textColor}; 
           font-size: ${fontSize}px; font-weight: bold; padding: ${paddingY}px ${paddingX}px; 
@@ -107,28 +116,57 @@ const Index = () => {
             {/* Icon Picker */}
             <IconPicker onSelect={(icon) => setButtonText(icon + " " + buttonText.replace(/^[\p{Emoji}\s]+/u, ""))} />
 
+            {/* Button Style Toggle */}
+            <div className="space-y-3">
+              <label className="text-sm text-muted-foreground">Button Style</label>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setButtonStyle("solid")}
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    buttonStyle === "solid"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  Solid Button
+                </button>
+                <button
+                  onClick={() => setButtonStyle("link")}
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    buttonStyle === "link"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  Link Style
+                </button>
+              </div>
+            </div>
+
             {/* Color Presets */}
             <ColorPresets onSelect={handlePresetSelect} />
 
             {/* Custom Colors */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <label className="text-sm text-muted-foreground">Background</label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="color"
-                    value={bgColor}
-                    onChange={(e) => setBgColor(e.target.value)}
-                    className="w-10 h-10 rounded-lg cursor-pointer border-0"
-                  />
-                  <Input
-                    type="text"
-                    value={bgColor}
-                    onChange={(e) => setBgColor(e.target.value)}
-                    className="bg-secondary/50 font-mono text-sm"
-                  />
+            <div className={`grid gap-4 ${buttonStyle === "solid" ? "grid-cols-2" : "grid-cols-1"}`}>
+              {buttonStyle === "solid" && (
+                <div className="space-y-3">
+                  <label className="text-sm text-muted-foreground">Background</label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={bgColor}
+                      onChange={(e) => setBgColor(e.target.value)}
+                      className="w-10 h-10 rounded-lg cursor-pointer border-0"
+                    />
+                    <Input
+                      type="text"
+                      value={bgColor}
+                      onChange={(e) => setBgColor(e.target.value)}
+                      className="bg-secondary/50 font-mono text-sm"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="space-y-3">
                 <label className="text-sm text-muted-foreground">Text Color</label>
                 <div className="flex items-center gap-3">
@@ -171,13 +209,15 @@ const Index = () => {
                 max={40}
                 onChange={setPaddingY}
               />
-              <SliderControl
-                label="Border Radius"
-                value={borderRadius}
-                min={0}
-                max={30}
-                onChange={setBorderRadius}
-              />
+              {buttonStyle === "solid" && (
+                <SliderControl
+                  label="Border Radius"
+                  value={borderRadius}
+                  min={0}
+                  max={30}
+                  onChange={setBorderRadius}
+                />
+              )}
             </div>
           </motion.div>
 
@@ -199,6 +239,7 @@ const Index = () => {
                 paddingX={paddingX}
                 paddingY={paddingY}
                 borderRadius={borderRadius}
+                styleType={buttonStyle}
               />
             </div>
 
@@ -208,16 +249,30 @@ const Index = () => {
                 buttonHtml={
                   <a
                     href={url || "#"}
-                    style={{
-                      display: "inline-block",
-                      backgroundColor: bgColor,
-                      color: textColor,
-                      fontSize: `${fontSize}px`,
-                      fontWeight: "bold",
-                      padding: `${paddingY}px ${paddingX}px`,
-                      textDecoration: "none",
-                      borderRadius: `${borderRadius}px`,
-                    }}
+                    style={
+                      buttonStyle === "link"
+                        ? {
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "8px",
+                            backgroundColor: "transparent",
+                            color: textColor,
+                            fontSize: `${fontSize}px`,
+                            padding: `${paddingY}px ${paddingX}px`,
+                            textDecoration: "underline",
+                            textUnderlineOffset: "4px",
+                          }
+                        : {
+                            display: "inline-block",
+                            backgroundColor: bgColor,
+                            color: textColor,
+                            fontSize: `${fontSize}px`,
+                            fontWeight: "bold",
+                            padding: `${paddingY}px ${paddingX}px`,
+                            textDecoration: "none",
+                            borderRadius: `${borderRadius}px`,
+                          }
+                    }
                   >
                     {buttonText || "🚀 Click Me"}
                   </a>
