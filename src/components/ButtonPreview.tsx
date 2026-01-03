@@ -22,14 +22,16 @@ const ButtonPreview = ({
   borderRadius,
 }: ButtonPreviewProps) => {
   const buttonStyle: React.CSSProperties = {
-    display: "inline-block",
-    backgroundColor: bgColor,
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    backgroundColor: "transparent",
     color: textColor,
     fontSize: `${fontSize}px`,
-    fontWeight: "bold",
+    fontWeight: "normal",
     padding: `${paddingY}px ${paddingX}px`,
-    textDecoration: "none",
-    borderRadius: `${borderRadius}px`,
+    textDecoration: "underline",
+    textUnderlineOffset: "4px",
     transition: "all 0.3s ease",
     cursor: "pointer",
   };
