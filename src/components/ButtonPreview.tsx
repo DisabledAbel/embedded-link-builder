@@ -10,6 +10,9 @@ interface ButtonPreviewProps {
   paddingY: number;
   borderRadius: number;
   styleType: "solid" | "link";
+  hoverScale?: number;
+  hoverShadow?: number;
+  hoverBgColor?: string;
 }
 
 const ButtonPreview = ({
@@ -22,7 +25,13 @@ const ButtonPreview = ({
   paddingY,
   borderRadius,
   styleType,
+  hoverScale = 105,
+  hoverShadow = 20,
+  hoverBgColor,
 }: ButtonPreviewProps) => {
+  const scaleValue = hoverScale / 100;
+  const actualHoverBg = hoverBgColor || bgColor;
+
   const solidStyle: React.CSSProperties = {
     display: "inline-block",
     backgroundColor: bgColor,
@@ -53,6 +62,14 @@ const ButtonPreview = ({
 
   const buttonStyle = styleType === "link" ? linkStyle : solidStyle;
 
+  const hoverAnimation = styleType === "link" 
+    ? { scale: scaleValue, opacity: 0.8 }
+    : { 
+        scale: scaleValue, 
+        backgroundColor: actualHoverBg,
+        boxShadow: `0 ${hoverShadow}px ${hoverShadow * 2}px rgba(0,0,0,0.2)` 
+      };
+
   return (
     <div className="flex flex-col items-center gap-4">
       <p className="text-sm text-muted-foreground">Live Preview</p>
@@ -67,7 +84,7 @@ const ButtonPreview = ({
           target="_blank"
           rel="noopener noreferrer"
           style={buttonStyle}
-          whileHover={{ scale: 1.05, filter: "brightness(1.1)" }}
+          whileHover={hoverAnimation}
           whileTap={{ scale: 0.98 }}
           onClick={(e) => !url && e.preventDefault()}
         >
