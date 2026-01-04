@@ -10,12 +10,6 @@ The site performs no server-side processing and introduces no state beyond the c
 
 * **Application Type:** Static website
 * **Execution Model:** Client-side only
-* **Persistence:** None
-* **Backend:** None
-* **Authentication:** None
-* **API Dependencies:** None
-
-All logic executes entirely within the browser runtime using standard web APIs.
 
 ---
 
