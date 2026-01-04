@@ -23,6 +23,9 @@ interface ButtonPreset {
   paddingY: number;
   borderRadius: number;
   buttonStyle: "solid" | "link";
+  hoverScale: number;
+  hoverShadow: number;
+  hoverBgColor: string;
 }
 
 const PRESETS_STORAGE_KEY = "button-generator-presets";
@@ -37,6 +40,9 @@ const Index = () => {
   const [paddingY, setPaddingY] = useState(15);
   const [borderRadius, setBorderRadius] = useState(12);
   const [buttonStyle, setButtonStyle] = useState<"solid" | "link">("solid");
+  const [hoverScale, setHoverScale] = useState(105);
+  const [hoverShadow, setHoverShadow] = useState(20);
+  const [hoverBgColor, setHoverBgColor] = useState("#1A91DA");
   
   const [savedPresets, setSavedPresets] = useState<ButtonPreset[]>([]);
   const [selectedPresetId, setSelectedPresetId] = useState<string>("");
@@ -63,6 +69,9 @@ const Index = () => {
       paddingY,
       borderRadius,
       buttonStyle,
+      hoverScale,
+      hoverShadow,
+      hoverBgColor,
     };
     const updated = [...savedPresets, newPreset];
     setSavedPresets(updated);
@@ -83,6 +92,9 @@ const Index = () => {
       setPaddingY(preset.paddingY);
       setBorderRadius(preset.borderRadius);
       setButtonStyle(preset.buttonStyle);
+      setHoverScale(preset.hoverScale ?? 105);
+      setHoverShadow(preset.hoverShadow ?? 20);
+      setHoverBgColor(preset.hoverBgColor ?? preset.bgColor);
       setSelectedPresetId(id);
       toast.success(`Loaded "${preset.name}"`);
     }
@@ -98,18 +110,34 @@ const Index = () => {
   };
 
   const generateCode = () => {
+    const scaleValue = hoverScale / 100;
+    const shadowPx = hoverShadow;
+    
     if (buttonStyle === "link") {
-      return `<a href="${url || "https://your-url.com"}" 
+      return `<style>
+  .custom-link:hover {
+    transform: scale(${scaleValue});
+    opacity: 0.8;
+  }
+</style>
+<a href="${url || "https://your-url.com"}" class="custom-link"
    style="display: inline-flex; align-items: center; gap: 8px; background-color: transparent; color: ${textColor}; 
           font-size: ${fontSize}px; padding: ${paddingY}px ${paddingX}px; 
-          text-decoration: underline; text-underline-offset: 4px;">
+          text-decoration: underline; text-underline-offset: 4px; transition: all 0.3s ease;">
     ${buttonText}
 </a>`;
     }
-    return `<a href="${url || "https://your-url.com"}" 
+    return `<style>
+  .custom-btn:hover {
+    background-color: ${hoverBgColor} !important;
+    transform: scale(${scaleValue});
+    box-shadow: 0 ${shadowPx}px ${shadowPx * 2}px rgba(0,0,0,0.2);
+  }
+</style>
+<a href="${url || "https://your-url.com"}" class="custom-btn"
    style="display: inline-block; background-color: ${bgColor}; color: ${textColor}; 
           font-size: ${fontSize}px; font-weight: bold; padding: ${paddingY}px ${paddingX}px; 
-          text-decoration: none; border-radius: ${borderRadius}px; transition: background 0.3s;">
+          text-decoration: none; border-radius: ${borderRadius}px; transition: all 0.3s ease;">
     ${buttonText}
 </a>`;
   };
@@ -343,6 +371,44 @@ const Index = () => {
                 />
               )}
             </div>
+
+            {/* Hover Effects */}
+            <div className="space-y-4 pt-2">
+              <label className="text-sm text-muted-foreground">Hover Effects</label>
+              <SliderControl
+                label="Hover Scale"
+                value={hoverScale}
+                min={100}
+                max={120}
+                onChange={setHoverScale}
+              />
+              <SliderControl
+                label="Hover Shadow"
+                value={hoverShadow}
+                min={0}
+                max={40}
+                onChange={setHoverShadow}
+              />
+              {buttonStyle === "solid" && (
+                <div className="space-y-3">
+                  <label className="text-sm text-muted-foreground">Hover Background</label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={hoverBgColor}
+                      onChange={(e) => setHoverBgColor(e.target.value)}
+                      className="w-10 h-10 rounded-lg cursor-pointer border-0"
+                    />
+                    <Input
+                      type="text"
+                      value={hoverBgColor}
+                      onChange={(e) => setHoverBgColor(e.target.value)}
+                      className="bg-secondary/50 font-mono text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </motion.div>
 
           {/* Preview & Output */}
@@ -364,6 +430,9 @@ const Index = () => {
                 paddingY={paddingY}
                 borderRadius={borderRadius}
                 styleType={buttonStyle}
+                hoverScale={hoverScale}
+                hoverShadow={hoverShadow}
+                hoverBgColor={hoverBgColor}
               />
             </div>
 
