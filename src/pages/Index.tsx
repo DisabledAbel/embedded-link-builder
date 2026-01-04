@@ -116,7 +116,7 @@ const Index = () => {
 
   const handlePresetSelect = (bg: string, text: string) => {
     setBgColor(bg);
-    setTextColor(text);
+    setTextColor(buttonStyle === "link" ? bg : text);
   };
 
   return (
@@ -268,7 +268,7 @@ const Index = () => {
             </div>
 
             {/* Color Presets */}
-            <ColorPresets onSelect={handlePresetSelect} />
+            <ColorPresets onSelect={handlePresetSelect} mode={buttonStyle} />
 
             {/* Custom Colors */}
             <div className={`grid gap-4 ${buttonStyle === "solid" ? "grid-cols-2" : "grid-cols-1"}`}>
