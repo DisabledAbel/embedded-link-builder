@@ -6,13 +6,11 @@ interface ColorPresetsProps {
 
 const presets = [
   { name: "Twitter Blue", bg: "#1DA1F2", text: "#FFFFFF" },
-  { name: "GitHub Dark", bg: "#24292e", text: "#FFFFFF" },
   { name: "Success Green", bg: "#10B981", text: "#FFFFFF" },
   { name: "Sunset Orange", bg: "#F97316", text: "#FFFFFF" },
   { name: "Royal Purple", bg: "#8B5CF6", text: "#FFFFFF" },
   { name: "Rose Pink", bg: "#EC4899", text: "#FFFFFF" },
   { name: "Ocean Teal", bg: "#14B8A6", text: "#FFFFFF" },
-  { name: "Slate Dark", bg: "#334155", text: "#FFFFFF" },
 ];
 
 const ColorPresets = ({ onSelect }: ColorPresetsProps) => {
