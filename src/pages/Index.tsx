@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link2, Sparkles } from "lucide-react";
+import { Link2, Sparkles, Save, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import ButtonPreview from "@/components/ButtonPreview";
 import CodeOutput from "@/components/CodeOutput";
@@ -8,6 +8,24 @@ import ColorPresets from "@/components/ColorPresets";
 import SliderControl from "@/components/SliderControl";
 import IconPicker from "@/components/IconPicker";
 import WebsitePreview from "@/components/WebsitePreview";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+
+interface ButtonPreset {
+  id: string;
+  name: string;
+  url: string;
+  buttonText: string;
+  bgColor: string;
+  textColor: string;
+  fontSize: number;
+  paddingX: number;
+  paddingY: number;
+  borderRadius: number;
+  buttonStyle: "solid" | "link";
+}
+
+const PRESETS_STORAGE_KEY = "button-generator-presets";
 
 const Index = () => {
   const [url, setUrl] = useState("");
@@ -19,6 +37,65 @@ const Index = () => {
   const [paddingY, setPaddingY] = useState(15);
   const [borderRadius, setBorderRadius] = useState(12);
   const [buttonStyle, setButtonStyle] = useState<"solid" | "link">("solid");
+  
+  const [savedPresets, setSavedPresets] = useState<ButtonPreset[]>([]);
+  const [selectedPresetId, setSelectedPresetId] = useState<string>("");
+  const [presetName, setPresetName] = useState("");
+
+  useEffect(() => {
+    const stored = localStorage.getItem(PRESETS_STORAGE_KEY);
+    if (stored) {
+      setSavedPresets(JSON.parse(stored));
+    }
+  }, []);
+
+  const savePreset = () => {
+    const name = presetName.trim() || `Preset ${savedPresets.length + 1}`;
+    const newPreset: ButtonPreset = {
+      id: Date.now().toString(),
+      name,
+      url,
+      buttonText,
+      bgColor,
+      textColor,
+      fontSize,
+      paddingX,
+      paddingY,
+      borderRadius,
+      buttonStyle,
+    };
+    const updated = [...savedPresets, newPreset];
+    setSavedPresets(updated);
+    localStorage.setItem(PRESETS_STORAGE_KEY, JSON.stringify(updated));
+    setPresetName("");
+    toast.success(`Saved "${name}"`);
+  };
+
+  const loadPreset = (id: string) => {
+    const preset = savedPresets.find((p) => p.id === id);
+    if (preset) {
+      setUrl(preset.url);
+      setButtonText(preset.buttonText);
+      setBgColor(preset.bgColor);
+      setTextColor(preset.textColor);
+      setFontSize(preset.fontSize);
+      setPaddingX(preset.paddingX);
+      setPaddingY(preset.paddingY);
+      setBorderRadius(preset.borderRadius);
+      setButtonStyle(preset.buttonStyle);
+      setSelectedPresetId(id);
+      toast.success(`Loaded "${preset.name}"`);
+    }
+  };
+
+  const deletePreset = (id: string) => {
+    const preset = savedPresets.find((p) => p.id === id);
+    const updated = savedPresets.filter((p) => p.id !== id);
+    setSavedPresets(updated);
+    localStorage.setItem(PRESETS_STORAGE_KEY, JSON.stringify(updated));
+    if (selectedPresetId === id) setSelectedPresetId("");
+    toast.success(`Deleted "${preset?.name}"`);
+  };
 
   const generateCode = () => {
     if (buttonStyle === "link") {
@@ -139,6 +216,53 @@ const Index = () => {
                   }`}
                 >
                   Link Style
+                </button>
+              </div>
+            </div>
+
+            {/* Save & Load Presets */}
+            <div className="space-y-3">
+              <label className="text-sm text-muted-foreground">Saved Presets</label>
+              <div className="flex gap-2">
+                <Select value={selectedPresetId} onValueChange={loadPreset}>
+                  <SelectTrigger className="flex-1 bg-secondary/50 border-border/50">
+                    <SelectValue placeholder="Load a preset..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {savedPresets.length === 0 ? (
+                      <SelectItem value="none" disabled>No presets saved</SelectItem>
+                    ) : (
+                      savedPresets.map((preset) => (
+                        <SelectItem key={preset.id} value={preset.id}>
+                          {preset.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+                {selectedPresetId && (
+                  <button
+                    onClick={() => deletePreset(selectedPresetId)}
+                    className="p-2 rounded-lg bg-destructive/20 text-destructive hover:bg-destructive/30 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="Preset name..."
+                  value={presetName}
+                  onChange={(e) => setPresetName(e.target.value)}
+                  className="bg-secondary/50 border-border/50"
+                />
+                <button
+                  onClick={savePreset}
+                  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  Save
                 </button>
               </div>
             </div>
