@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 
 interface ColorPresetsProps {
   onSelect: (bg: string, text: string) => void;
+  mode?: "solid" | "link";
 }
 
 const presets = [
@@ -13,15 +14,21 @@ const presets = [
   { name: "Ocean Teal", bg: "#14B8A6", text: "#FFFFFF" },
 ];
 
-const ColorPresets = ({ onSelect }: ColorPresetsProps) => {
+const ColorPresets = ({ onSelect, mode = "solid" }: ColorPresetsProps) => {
   return (
     <div className="space-y-3">
-      <p className="text-sm text-muted-foreground">Quick Presets</p>
+      <p className="text-sm text-muted-foreground">
+        {mode === "link" ? "Link Color Presets" : "Quick Presets"}
+      </p>
       <div className="flex flex-wrap gap-2">
         {presets.map((preset, index) => (
           <motion.button
             key={preset.name}
-            onClick={() => onSelect(preset.bg, preset.text)}
+            onClick={() => 
+              mode === "link" 
+                ? onSelect(preset.bg, preset.bg) // For links, use the bg color as text color
+                : onSelect(preset.bg, preset.text)
+            }
             className="group relative w-8 h-8 rounded-lg border-2 border-transparent hover:border-primary/50 transition-all"
             style={{ backgroundColor: preset.bg }}
             initial={{ opacity: 0, scale: 0.8 }}
