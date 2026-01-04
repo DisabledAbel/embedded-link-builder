@@ -99,8 +99,7 @@ There is no server-rendered content, background worker, API gateway, or persiste
 
 * **HTML5** – semantic document structure
 * **CSS3** – layout and styling
-* **Vanilla JavaScript** – client-side logic
-* **Hosting:** Vercel
+* **Vanilla JavaScript** – client-side logiin 
 * **Build Platform:** Lovable
 
 No frameworks, databases, or serverless functions are required.
