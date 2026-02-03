@@ -13,6 +13,8 @@ interface ButtonPreviewProps {
   hoverScale?: number;
   hoverShadow?: number;
   hoverBgColor?: string;
+  underlineThickness?: number;
+  underlineStyle?: "solid" | "dashed" | "dotted";
 }
 
 const ButtonPreview = ({
@@ -28,6 +30,8 @@ const ButtonPreview = ({
   hoverScale = 105,
   hoverShadow = 20,
   hoverBgColor,
+  underlineThickness = 2,
+  underlineStyle = "solid",
 }: ButtonPreviewProps) => {
   const scaleValue = hoverScale / 100;
   const actualHoverBg = hoverBgColor || bgColor;
@@ -55,6 +59,8 @@ const ButtonPreview = ({
     fontWeight: "normal",
     padding: `${paddingY}px ${paddingX}px`,
     textDecoration: "underline",
+    textDecorationStyle: underlineStyle,
+    textDecorationThickness: `${underlineThickness}px`,
     textUnderlineOffset: "4px",
     transition: "all 0.3s ease",
     cursor: "pointer",

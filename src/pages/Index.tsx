@@ -26,6 +26,8 @@ interface ButtonPreset {
   hoverScale: number;
   hoverShadow: number;
   hoverBgColor: string;
+  underlineThickness: number;
+  underlineStyle: "solid" | "dashed" | "dotted";
 }
 
 const PRESETS_STORAGE_KEY = "button-generator-presets";
@@ -43,6 +45,8 @@ const Index = () => {
   const [hoverScale, setHoverScale] = useState(105);
   const [hoverShadow, setHoverShadow] = useState(20);
   const [hoverBgColor, setHoverBgColor] = useState("#1A91DA");
+  const [underlineThickness, setUnderlineThickness] = useState(2);
+  const [underlineStyle, setUnderlineStyle] = useState<"solid" | "dashed" | "dotted">("solid");
   
   const [savedPresets, setSavedPresets] = useState<ButtonPreset[]>([]);
   const [selectedPresetId, setSelectedPresetId] = useState<string>("");
@@ -72,6 +76,8 @@ const Index = () => {
       hoverScale,
       hoverShadow,
       hoverBgColor,
+      underlineThickness,
+      underlineStyle,
     };
     const updated = [...savedPresets, newPreset];
     setSavedPresets(updated);
@@ -95,6 +101,8 @@ const Index = () => {
       setHoverScale(preset.hoverScale ?? 105);
       setHoverShadow(preset.hoverShadow ?? 20);
       setHoverBgColor(preset.hoverBgColor ?? preset.bgColor);
+      setUnderlineThickness(preset.underlineThickness ?? 2);
+      setUnderlineStyle(preset.underlineStyle ?? "solid");
       setSelectedPresetId(id);
       toast.success(`Loaded "${preset.name}"`);
     }
@@ -123,7 +131,7 @@ const Index = () => {
 <a href="${url || "https://your-url.com"}" class="custom-link"
    style="display: inline-flex; align-items: center; gap: 8px; background-color: transparent; color: ${textColor}; 
           font-size: ${fontSize}px; padding: ${paddingY}px ${paddingX}px; 
-          text-decoration: underline; text-underline-offset: 4px; transition: all 0.3s ease;">
+          text-decoration: underline; text-decoration-style: ${underlineStyle}; text-decoration-thickness: ${underlineThickness}px; text-underline-offset: 4px; transition: all 0.3s ease;">
     ${buttonText}
 </a>`;
     }
@@ -408,6 +416,35 @@ const Index = () => {
                   </div>
                 </div>
               )}
+              {buttonStyle === "link" && (
+                <>
+                  <SliderControl
+                    label="Underline Thickness"
+                    value={underlineThickness}
+                    min={1}
+                    max={6}
+                    onChange={setUnderlineThickness}
+                  />
+                  <div className="space-y-3">
+                    <label className="text-sm text-muted-foreground">Underline Style</label>
+                    <div className="flex gap-2">
+                      {(["solid", "dashed", "dotted"] as const).map((style) => (
+                        <button
+                          key={style}
+                          onClick={() => setUnderlineStyle(style)}
+                          className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all capitalize ${
+                            underlineStyle === style
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                          }`}
+                        >
+                          {style}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </motion.div>
 
@@ -433,6 +470,8 @@ const Index = () => {
                 hoverScale={hoverScale}
                 hoverShadow={hoverShadow}
                 hoverBgColor={hoverBgColor}
+                underlineThickness={underlineThickness}
+                underlineStyle={underlineStyle}
               />
             </div>
 
@@ -453,6 +492,8 @@ const Index = () => {
                             fontSize: `${fontSize}px`,
                             padding: `${paddingY}px ${paddingX}px`,
                             textDecoration: "underline",
+                            textDecorationStyle: underlineStyle,
+                            textDecorationThickness: `${underlineThickness}px`,
                             textUnderlineOffset: "4px",
                           }
                         : {
