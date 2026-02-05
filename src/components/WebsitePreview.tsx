@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Monitor, CreditCard, Mail, Layout, Moon, Sun } from "lucide-react";
 
@@ -10,7 +10,19 @@ type PreviewMode = "hero" | "card" | "email" | "minimal";
 
 const WebsitePreview = ({ buttonHtml }: WebsitePreviewProps) => {
   const [mode, setMode] = useState<PreviewMode>("hero");
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   const modes = [
     { id: "hero" as const, label: "Hero Section", icon: Monitor },
