@@ -119,6 +119,18 @@ const Index = () => {
   };
 
   const generateCode = () => {
+    const targetUrl = url || "https://your-url.com";
+
+    if (outputFormat === "github") {
+      // Strip emoji for badge label, keep emoji for alt text
+      const cleanText = buttonText.replace(/[\p{Emoji_Presentation}\p{Emoji}\uFE0F\u200D]+/gu, "").trim();
+      const label = encodeURIComponent(cleanText || "Open");
+      const hexBg = bgColor.replace("#", "");
+      const badgeStyle = buttonStyle === "link" ? "flat" : "for-the-badge";
+      const badgeUrl = `https://img.shields.io/badge/${label}-${hexBg}?style=${badgeStyle}&logoColor=${textColor.replace("#", "")}`;
+      return `[![${buttonText}](${badgeUrl})](${targetUrl})`;
+    }
+
     const scaleValue = hoverScale / 100;
     const shadowPx = hoverShadow;
     
@@ -129,7 +141,7 @@ const Index = () => {
     opacity: 0.8;
   }
 </style>
-<a href="${url || "https://your-url.com"}" class="custom-link"
+<a href="${targetUrl}" class="custom-link"
    style="display: inline-flex; align-items: center; gap: 8px; background-color: transparent; color: ${textColor}; 
           font-size: ${fontSize}px; padding: ${paddingY}px ${paddingX}px; 
           text-decoration: underline; text-decoration-style: ${underlineStyle}; text-decoration-thickness: ${underlineThickness}px; text-underline-offset: 4px; transition: all 0.3s ease;">
@@ -143,7 +155,7 @@ const Index = () => {
     box-shadow: 0 ${shadowPx}px ${shadowPx * 2}px rgba(0,0,0,0.2);
   }
 </style>
-<a href="${url || "https://your-url.com"}" class="custom-btn"
+<a href="${targetUrl}" class="custom-btn"
    style="display: inline-block; background-color: ${bgColor}; color: ${textColor}; 
           font-size: ${fontSize}px; font-weight: bold; padding: ${paddingY}px ${paddingX}px; 
           text-decoration: none; border-radius: ${borderRadius}px; transition: all 0.3s ease;">
