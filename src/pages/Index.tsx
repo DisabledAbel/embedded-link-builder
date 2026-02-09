@@ -47,6 +47,7 @@ const Index = () => {
   const [hoverBgColor, setHoverBgColor] = useState("#1A91DA");
   const [underlineThickness, setUnderlineThickness] = useState(2);
   const [underlineStyle, setUnderlineStyle] = useState<"solid" | "dashed" | "dotted">("solid");
+  const [outputFormat, setOutputFormat] = useState<"html" | "github">("html");
   
   const [savedPresets, setSavedPresets] = useState<ButtonPreset[]>([]);
   const [selectedPresetId, setSelectedPresetId] = useState<string>("");
