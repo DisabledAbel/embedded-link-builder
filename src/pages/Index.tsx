@@ -47,6 +47,7 @@ const Index = () => {
   const [hoverBgColor, setHoverBgColor] = useState("#1A91DA");
   const [underlineThickness, setUnderlineThickness] = useState(2);
   const [underlineStyle, setUnderlineStyle] = useState<"solid" | "dashed" | "dotted">("solid");
+  const [outputFormat, setOutputFormat] = useState<"html" | "github">("html");
   
   const [savedPresets, setSavedPresets] = useState<ButtonPreset[]>([]);
   const [selectedPresetId, setSelectedPresetId] = useState<string>("");
@@ -118,6 +119,18 @@ const Index = () => {
   };
 
   const generateCode = () => {
+    const targetUrl = url || "https://your-url.com";
+
+    if (outputFormat === "github") {
+      // Strip emoji for badge label, keep emoji for alt text
+      const cleanText = buttonText.replace(/[\p{Emoji_Presentation}\p{Emoji}\uFE0F\u200D]+/gu, "").trim();
+      const label = encodeURIComponent(cleanText || "Open");
+      const hexBg = bgColor.replace("#", "");
+      const badgeStyle = buttonStyle === "link" ? "flat" : "for-the-badge";
+      const badgeUrl = `https://img.shields.io/badge/${label}-${hexBg}?style=${badgeStyle}&logoColor=${textColor.replace("#", "")}`;
+      return `[![${buttonText}](${badgeUrl})](${targetUrl})`;
+    }
+
     const scaleValue = hoverScale / 100;
     const shadowPx = hoverShadow;
     
@@ -128,7 +141,7 @@ const Index = () => {
     opacity: 0.8;
   }
 </style>
-<a href="${url || "https://your-url.com"}" class="custom-link"
+<a href="${targetUrl}" class="custom-link"
    style="display: inline-flex; align-items: center; gap: 8px; background-color: transparent; color: ${textColor}; 
           font-size: ${fontSize}px; padding: ${paddingY}px ${paddingX}px; 
           text-decoration: underline; text-decoration-style: ${underlineStyle}; text-decoration-thickness: ${underlineThickness}px; text-underline-offset: 4px; transition: all 0.3s ease;">
@@ -142,7 +155,7 @@ const Index = () => {
     box-shadow: 0 ${shadowPx}px ${shadowPx * 2}px rgba(0,0,0,0.2);
   }
 </style>
-<a href="${url || "https://your-url.com"}" class="custom-btn"
+<a href="${targetUrl}" class="custom-btn"
    style="display: inline-block; background-color: ${bgColor}; color: ${textColor}; 
           font-size: ${fontSize}px; font-weight: bold; padding: ${paddingY}px ${paddingX}px; 
           text-decoration: none; border-radius: ${borderRadius}px; transition: all 0.3s ease;">
@@ -514,8 +527,35 @@ const Index = () => {
               />
             </div>
 
-            {/* Code Output */}
-            <div className="glass-card rounded-2xl p-6">
+            {/* Output Format Toggle & Code Output */}
+            <div className="glass-card rounded-2xl p-6 space-y-4">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setOutputFormat("html")}
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    outputFormat === "html"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  HTML
+                </button>
+                <button
+                  onClick={() => setOutputFormat("github")}
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    outputFormat === "github"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  GitHub Markdown
+                </button>
+              </div>
+              {outputFormat === "github" && (
+                <p className="text-xs text-muted-foreground">
+                  Uses shields.io badges — works in GitHub READMEs where inline styles are stripped.
+                </p>
+              )}
               <CodeOutput code={generateCode()} />
             </div>
           </motion.div>
@@ -528,7 +568,7 @@ const Index = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          Paste the generated code into any HTML page or email template
+          Paste the generated code into any HTML page, email template, or GitHub README
         </motion.footer>
       </div>
     </div>
