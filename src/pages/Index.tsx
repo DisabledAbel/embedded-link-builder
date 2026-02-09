@@ -527,8 +527,35 @@ const Index = () => {
               />
             </div>
 
-            {/* Code Output */}
-            <div className="glass-card rounded-2xl p-6">
+            {/* Output Format Toggle & Code Output */}
+            <div className="glass-card rounded-2xl p-6 space-y-4">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setOutputFormat("html")}
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    outputFormat === "html"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  HTML
+                </button>
+                <button
+                  onClick={() => setOutputFormat("github")}
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    outputFormat === "github"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                  }`}
+                >
+                  GitHub Markdown
+                </button>
+              </div>
+              {outputFormat === "github" && (
+                <p className="text-xs text-muted-foreground">
+                  Uses shields.io badges — works in GitHub READMEs where inline styles are stripped.
+                </p>
+              )}
               <CodeOutput code={generateCode()} />
             </div>
           </motion.div>
