@@ -568,7 +568,7 @@ const Index = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          Paste the generated code into any HTML page or email template
+          Paste the generated code into any HTML page, email template, or GitHub README
         </motion.footer>
       </div>
     </div>
